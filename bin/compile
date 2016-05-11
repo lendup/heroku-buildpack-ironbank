@@ -10,7 +10,9 @@ ENV_DIR="$3"
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven-3.3.9"
+
 JETTY_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.9.v20130131/jetty-runner-8.1.9.v20130131.jar"
+JETTY_JAR="jetty-runner-8.1.9.v20130131.jar"
 
 ##
 ## Helper functions
@@ -86,5 +88,12 @@ cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-
 # Build the actual WAR archive
 jar cvf app.war ironbank-credit/target/war
 
-# Download jetty-runner
-wget "$JETTY_URL"
+# Download the jetty runner, this will run the WAR
+if [ ! -f "$CACHE_DIR/$JETTY_JAR" ]; then
+    status "Cached jetty runner jar not found, downloading"
+    wget "$JETTY_URL"
+    cp "$JETTY_JAR" "$CACHE_DIR"
+else
+    status "Cached jetty runner jar found"
+    cp "$CACHE_DIR/$JETTY_JAR" .
+fi
