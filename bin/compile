@@ -79,14 +79,13 @@ tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>
 mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
 mvn play:war-exploded --projects ironbank-credit
 
-cat ironbank-credit/target/war/WEB-INF/web.xml
-
 # Make the JS directory in the WAR directory and copy static files to it
 mkdir -p ironbank-credit/target/war/WEB-INF/application/src/main/javascript
 cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-INF/application/src/main/javascript
 
 # Build the actual WAR archive
-jar cvf app.war ironbank-credit/target/war
+cd ironbank-credit/target/war
+jar cvf "$BUILD_DIR/app.war" .
 
 # Download the jetty runner, this will run the WAR
 if [ ! -f "$CACHE_DIR/$JETTY_JAR" ]; then
