@@ -22,7 +22,7 @@ status() {
 }
 
 export_env_dir() {
-  env_dir=$3
+  env_dir=$1
   whitelist_regex=${2:-''}
   blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
   if [ -d "$env_dir" ]; then
@@ -39,7 +39,7 @@ export_env_dir() {
 ##
 
 # Pull in all env vars
-export_env_dir
+export_env_dir "$ENV_DIR"
 
 # Set up Maven
 if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
