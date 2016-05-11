@@ -7,10 +7,6 @@ ENV_DIR="$3"
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven-3.3.9"
 
-function status() {
-    echo "-----> $1"
-}
-
 # Set up Maven
 if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
     wget -qO- "$MAVEN_URL" | tar xvz
