@@ -1,4 +1,5 @@
 #!/bin/sh
 
 # This buildpack will only be run for supported apps
+echo "iron-bank"
 exit 0
