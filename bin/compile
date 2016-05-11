@@ -75,7 +75,7 @@ mvn play:initialize play:precompile --projects ironbank-credit
 # "duplicate file" issue when building the WAR
 tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>com\.lendup\.playframework.*?</dependency>##g' > ironbank-credit/new-pom.xml
 mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
-mvn play:war-exploded
+mvn play:war-exploded --projects ironbank-credit
 
 cat ironbank-credit/target/war/WEB-INF/web.xml
 
