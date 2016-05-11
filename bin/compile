@@ -4,12 +4,39 @@ BUILD_DIR="$1"
 CACHE_DIR="$2"
 ENV_DIR="$3"
 
+##
+## Constants
+## 
+
+MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
+MAVEN_DIR="apache-maven-3.3.9"
+
+##
+## Helper functions
+##
 status() {
     echo "-----> $1"
 }
 
-MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
-MAVEN_DIR="apache-maven-3.3.9"
+export_env_dir() {
+  env_dir=$3
+  whitelist_regex=${2:-''}
+  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    for e in $(ls $env_dir); do
+      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
+      export "$e=$(cat $env_dir/$e)"
+      :
+    done
+  fi
+}
+
+##
+## Code
+##
+
+# Pull in all env vars
+export_env_dir
 
 # Set up Maven
 if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
@@ -21,6 +48,10 @@ else
     cp -r "$CACHE_DIR/$MAVEN_DIR" .
 fi
 export PATH="$PATH:$(pwd)/$MAVEN_DIR/bin"
+
+# Copy over Maven settings
+mkdir -p ~/.m2
+cp "$BUILD_DIR/assets/settings.xml" ~/.m2
 
 # Set up cached Maven repository
 if [ -d "$CACHE_DIR/.m2" ]; then
