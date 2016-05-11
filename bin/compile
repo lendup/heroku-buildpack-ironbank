@@ -10,6 +10,7 @@ ENV_DIR="$3"
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven-3.3.9"
+JETTY_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.16.v20140903/jetty-runner-8.1.16.v20140903.jar"
 
 ##
 ## Helper functions
@@ -67,13 +68,21 @@ mvn install -DskipTests=true
 rm -rf "$CACHE_DIR/.m2"
 cp -r ~/.m2 "$CACHE_DIR"
 
-# Build WAR file
+# Initialize Play! and precompile it. Required before building WAR
 mvn play:initialize play:precompile --projects ironbank-credit
 
-tr -d '\r\n' < ironbank-credit/pom.xml | sed -e 's/<dependency> +<groupId>com\.lendup\.playframework.*?<\/dependency>//'
+# Build WAR goal. We need to remove the Play! dependency from the POM due to a
+# "duplicate file" issue when building the WAR
+tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>com\.lendup\.playframework.*?</dependency>##g' > ironbank-credit/new-pom.xml
+mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
+mvn play:war-exploded
 
-# 11148* mvn play:war-exploded
-# 11149* mkdir -p target/war/WEB-INF/application/src/main/javascript
-# 11150* cp -r src/main/javascript/static target/war/WEB-INF/application/src/main/javascript
-# 11151* cd target/war
-# 11152* jar cvf app.war .
+# Make the JS directory in the WAR directory and copy static files to it
+mkdir -p ironbank-credit/target/war/WEB-INF/application/src/main/javascript
+cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-INF/application/src/main/javascript
+
+# Build the actual WAR archive
+jar cvf app.war ironbank-credit/target/war
+
+# Download jetty-runner
+wget "$JETTY_URL"
