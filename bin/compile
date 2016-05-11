@@ -9,11 +9,16 @@ MAVEN_DIR="apache-maven-3.3.9"
 
 # Set up Maven
 if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
-    wget -qO- "$MAVEN_URL" | tar xvz
+    wget -qO- "$MAVEN_URL" | tar xz
     cp -r "$MAVEN_DIR" "$CACHE_DIR"
 else
     cp -r "$CACHE_DIR/$MAVEN_DIR" .
 fi
 export PATH="$PATH:$MAVEN_DIR/bin"
 
-ls "$BUILD_DIR"
+# Build entire project
+cd "$BUILD_DIR"
+mvn install
+
+# Build WAR file
+mvn play:initialize play:precompile --projects ironbank-credit
