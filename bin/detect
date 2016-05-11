@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# This buildpack will only be run for supported apps
+exit 0

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+BUILD_DIR="$1"
+
+if [ ! -f "$BUILD_DIR/Procfile" ]; then
+    cat <<EOF
+default_process_types:
+    web:    java -jar jetty-runner.jar app.war
+EOF
+fi
