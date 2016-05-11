@@ -86,6 +86,7 @@ cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-
 # Build the actual WAR archive
 cd ironbank-credit/target/war
 jar cvf "$BUILD_DIR/app.war" .
+cd -
 
 # Download the jetty runner, this will run the WAR
 if [ ! -f "$CACHE_DIR/$JETTY_JAR" ]; then
