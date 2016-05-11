@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BUILD_DIR="$1"
 CACHE_DIR="$2"
@@ -18,7 +18,7 @@ fi
 ls .
 
 echo "PATH before: $PATH"
-export PATH="$PATH:$MAVEN_DIR/bin"
+export PATH="$PATH:$(pwd)/$MAVEN_DIR/bin"
 echo "PATH after: $PATH"
 
 # Build entire project
