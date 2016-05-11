@@ -14,7 +14,12 @@ if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
 else
     cp -r "$CACHE_DIR/$MAVEN_DIR" .
 fi
+
+ls .
+
+echo "PATH before: $PATH"
 export PATH="$PATH:$MAVEN_DIR/bin"
+echo "PATH after: $PATH"
 
 # Build entire project
 cd "$BUILD_DIR"
