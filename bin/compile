@@ -61,7 +61,7 @@ fi
 
 # Build entire project
 cd "$BUILD_DIR"
-mvn install
+mvn install -DskipTests=true
 
 # Cache Maven repository
 rm -rf "$CACHE_DIR/.m2"
