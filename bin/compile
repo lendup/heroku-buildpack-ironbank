@@ -10,7 +10,7 @@ ENV_DIR="$3"
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven-3.3.9"
-JETTY_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.16.v20140903/jetty-runner-8.1.16.v20140903.jar"
+JETTY_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.9.v20130131/jetty-runner-8.1.9.v20130131.jar"
 
 ##
 ## Helper functions
