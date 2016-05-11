@@ -16,5 +16,4 @@ else
 fi
 export PATH="$PATH:$MAVEN_DIR/bin"
 
-java -version
-mvn --version
+ls "$BUILD_DIR"
