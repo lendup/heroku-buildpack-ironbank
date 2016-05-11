@@ -77,6 +77,8 @@ tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>
 mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
 mvn play:war-exploded
 
+cat ironbank-credit/arget/war/WEB-INF/web.xml
+
 # Make the JS directory in the WAR directory and copy static files to it
 mkdir -p ironbank-credit/target/war/WEB-INF/application/src/main/javascript
 cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-INF/application/src/main/javascript
