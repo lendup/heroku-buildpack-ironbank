@@ -70,7 +70,7 @@ cp -r ~/.m2 "$CACHE_DIR"
 # Build WAR file
 mvn play:initialize play:precompile --projects ironbank-credit
 
-tr -d '\r\n' < ironbank-credit/pom.xml | sed -e 's/<dependency>.*?com\.lendup\.playframework.*?<\/dependency>//'
+tr -d '\r\n' < ironbank-credit/pom.xml | sed -e 's/<dependency> +<groupId>com\.lendup\.playframework.*?<\/dependency>//'
 
 # 11148* mvn play:war-exploded
 # 11149* mkdir -p target/war/WEB-INF/application/src/main/javascript
