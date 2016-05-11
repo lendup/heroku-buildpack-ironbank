@@ -5,6 +5,6 @@ BUILD_DIR="$1"
 if [ ! -f "$BUILD_DIR/Procfile" ]; then
     cat <<EOF
 default_process_types:
-    web:    java -jar jetty-runner-8.1.16.v20140903.jar app.war
+    web:    ls && java -jar jetty-runner-8.1.16.v20140903.jar app.war
 EOF
 fi
