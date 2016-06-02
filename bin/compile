@@ -6,7 +6,7 @@ ENV_DIR="$3"
 
 ##
 ## Constants
-## 
+##
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven-3.3.9"
@@ -52,10 +52,6 @@ else
 fi
 export PATH="$PATH:$(pwd)/$MAVEN_DIR/bin"
 
-# Copy over Maven settings
-mkdir -p ~/.m2
-cp "$BUILD_DIR/assets/settings.xml" ~/.m2
-
 # Set up cached Maven repository
 if [ -d "$CACHE_DIR/.m2" ]; then
     status "Found cached ~/.m2/repository"
@@ -63,8 +59,10 @@ if [ -d "$CACHE_DIR/.m2" ]; then
 fi
 
 # Build entire project
+MAVEN_SETTINGS="$BUILD_DIR/assets/settings.xml"
+
 cd "$BUILD_DIR"
-mvn install -DskipTests=true
+mvn -s $MAVEN_SETTINGS install -DskipTests=true
 
 # Cache Maven repository
 rm -rf "$CACHE_DIR/.m2"
