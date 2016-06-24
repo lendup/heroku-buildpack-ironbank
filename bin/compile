@@ -79,7 +79,7 @@ fi
 
 # Build WAR goal. We need to remove the Play! dependency from the POM due to a
 # "duplicate file" issue when building the WAR
-tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>com\.lendup\.playframework.*?</dependency>##g' > ironbank-credit/new-pom.xml
+tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>com\.lendup\.playframework<.*?</dependency>##g' > ironbank-credit/new-pom.xml
 mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
 status "mvn play:war-exploded --projects ironbank-credit \"-Dplay.warId=$PLAY_ID\""
 mvn play:war-exploded --projects ironbank-credit "-Dplay.warId=$PLAY_ID"
