@@ -9,98 +9,29 @@ ENV_DIR="$3"
 ## 
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
-MAVEN_DIR="apache-maven-3.3.9"
-
-JETTY_URL="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-runner/8.1.9.v20130131/jetty-runner-8.1.9.v20130131.jar"
-JETTY_JAR="jetty-runner-8.1.9.v20130131.jar"
-
-##
-## Helper functions
-##
-status() {
-    echo "-----> $1"
-}
-
-export_env_dir() {
-  env_dir=$1
-  whitelist_regex=${2:-''}
-  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
-  if [ -d "$env_dir" ]; then
-    for e in $(ls $env_dir); do
-      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-      export "$e=$(cat $env_dir/$e)"
-      :
-    done
-  fi
-}
+MAVEN_DIR="apache-maven"
+CACHED_MAVEN_REPO=${CACHE_DIR}/.m2_repository
 
 ##
 ## Code
 ##
 
-# Pull in all env vars
-export_env_dir "$ENV_DIR"
-
 # Set up Maven
-if [ ! -d "$CACHE_DIR/$MAVEN_DIR" ]; then
-    status "Cached Maven binary not found, downloading"
-    wget -qO- "$MAVEN_URL" | tar xz
-    cp -r "$MAVEN_DIR" "$CACHE_DIR"
-else
-    status "Found cached Maven binary"
-    cp -r "$CACHE_DIR/$MAVEN_DIR" .
+if [ ! -d ${CACHE_DIR}/${MAVEN_DIR} ]; then
+    mkdir -p ${CACHE_DIR}/${MAVEN_DIR}
+    echo "-----> Cached Maven binary not found, downloading"
+    wget -qO- ${MAVEN_URL} | tar xz -C ${CACHE_DIR}/${MAVEN_DIR} --strip-components 1
 fi
-export PATH="$PATH:$(pwd)/$MAVEN_DIR/bin"
 
-# Copy over Maven settings
-mkdir -p ~/.m2
-cp "$BUILD_DIR/assets/settings.xml" ~/.m2
-
-# Set up cached Maven repository
-if [ -d "$CACHE_DIR/.m2" ]; then
-    status "Found cached ~/.m2/repository"
-    cp -r "$CACHE_DIR/.m2" ~/
-fi
+cp -r ${CACHE_DIR}/${MAVEN_DIR} ${BUILD_DIR}
 
 # Build entire project
 cd "$BUILD_DIR"
-mvn install -DskipTests=true
 
-# Cache Maven repository
-rm -rf "$CACHE_DIR/.m2"
-cp -r ~/.m2 "$CACHE_DIR"
+# Initialize Play! and precompile it.
+${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
 
-# Initialize Play! and precompile it. Required before building WAR
-mvn play:initialize play:precompile --projects ironbank-credit
+# remove unnecessary node modules and free up space since slug is limited to <300 MB compressed
+rm -rf ${BUILD_DIR}/ironbank-credit/src/main/javascript/node_modules
 
-if [ "$PLAY_ID" = "" ]; then
-    PLAY_ID=production
-fi
-
-# Build WAR goal. We need to remove the Play! dependency from the POM due to a
-# "duplicate file" issue when building the WAR
-tr -d '\r\n' < ironbank-credit/pom.xml | perl -pe 's#<dependency>[ \t]+<groupId>com\.lendup\.playframework<.*?</dependency>##g' > ironbank-credit/new-pom.xml
-mv ironbank-credit/new-pom.xml ironbank-credit/pom.xml
-status "mvn play:war-exploded --projects ironbank-credit \"-Dplay.warId=$PLAY_ID\""
-mvn play:war-exploded --projects ironbank-credit "-Dplay.warId=$PLAY_ID"
-
-cat ironbank-credit/target/war/WEB-INF/web.xml
-
-# Make the JS directory in the WAR directory and copy static files to it
-mkdir -p ironbank-credit/target/war/WEB-INF/application/src/main/javascript
-cp -r ironbank-credit/src/main/javascript/static ironbank-credit/target/war/WEB-INF/application/src/main/javascript
-
-# Build the actual WAR archive
-cd ironbank-credit/target/war
-jar cvf "$BUILD_DIR/app.war" .
-cd -
-
-# Download the jetty runner, this will run the WAR
-if [ ! -f "$CACHE_DIR/$JETTY_JAR" ]; then
-    status "Cached jetty runner jar not found, downloading"
-    wget "$JETTY_URL"
-    cp "$JETTY_JAR" "$CACHE_DIR"
-else
-    status "Cached jetty runner jar found"
-    cp "$CACHE_DIR/$JETTY_JAR" .
-fi
+cp -r ${CACHED_MAVEN_REPO} ${BUILD_DIR}

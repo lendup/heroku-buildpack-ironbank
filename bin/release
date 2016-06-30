@@ -5,6 +5,6 @@ BUILD_DIR="$1"
 if [ ! -f "$BUILD_DIR/Procfile" ]; then
     cat <<EOF
 default_process_types:
-    web: java -jar jetty-runner-8.1.9.v20130131.jar --port \$PORT app.war
+    web: ./apache-maven/bin/mvn -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository compile play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID
 EOF
 fi
