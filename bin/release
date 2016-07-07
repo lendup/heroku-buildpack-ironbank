@@ -5,6 +5,7 @@ BUILD_DIR="$1"
 if [ ! -f "$BUILD_DIR/Procfile" ]; then
     cat <<EOF
 default_process_types:
+    migrate: ./apache-maven/bin/mvn -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository flyway:migrate -Dflyway.url=${JDBC_DATABASE_URL} -Dflyway.user=${JDBC_DATABASE_USER} -Dflyway.password=${JDBC_DATABASE_PASSWORD}
     web: ./apache-maven/bin/mvn -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository compile play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID
 EOF
 fi
