@@ -32,6 +32,6 @@ cd "$BUILD_DIR"
 ${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
 
 # remove unnecessary node modules and free up space since slug is limited to <300 MB compressed
-rm -rf ${BUILD_DIR}/ironbank-credit/src/main/javascript/node_modules
+rm -rf ${BUILD_DIR}/ironbank-credit/src/main/javascript/node_modules ${BUILD_DIR}/src/main/javascript/node_modules
 
 cp -r ${CACHED_MAVEN_REPO} ${BUILD_DIR}
