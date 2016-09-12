@@ -12,6 +12,11 @@ MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/a
 MAVEN_DIR="apache-maven"
 CACHED_MAVEN_REPO=${CACHE_DIR}/.m2_repository
 
+# NewRelic Constants
+NEWRELIC_VERSION="3.31.1"
+NEWRELIC_DIR="newrelic"
+NEWRELIC_URL="https://download.newrelic.com/newrelic/java-agent/newrelic-agent/${NEWRELIC_VERSION}/newrelic-java-${NEWRELIC_VERSION}.zip"
+
 ##
 ## Code
 ##
@@ -23,7 +28,24 @@ if [ ! -d ${CACHE_DIR}/${MAVEN_DIR} ]; then
     wget -qO- ${MAVEN_URL} | tar xz -C ${CACHE_DIR}/${MAVEN_DIR} --strip-components 1
 fi
 
+# Setup NewRelic
+if [ ! -d ${CACHE_DIR}/${NEWRELIC_DIR} ]; then
+    mkdir -p ${CACHE_DIR}/NEWRELIC_DIR
+    echo "-----> Cached NewRelic agent not found, downloading"
+    echo "-----> Downloading from ${NEWRELIC_URL}..."
+    wget -q ${NEWRELIC_URL} -O ${CACHE_DIR}/newrelic_tmp.zip
+    unzip ${CACHE_DIR}/newrelic_tmp.zip -d ${CACHE_DIR}
+    rm ${CACHE_DIR}/newrelic_tmp.zip
+fi
+
 cp -r ${CACHE_DIR}/${MAVEN_DIR} ${BUILD_DIR}
+cp -r ${CACHE_DIR}/${NEWRELIC_DIR} ${BUILD_DIR}
+
+echo "Build dir folders: "
+echo `ls -lh ${BUILD_DIR}`
+
+echo "NewRelic Dir folders: "
+echo `ls -lh ${BUILD_DIR}/${NEWRELIC_DIR}`
 
 # Build entire project
 cd "$BUILD_DIR"
