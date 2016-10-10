@@ -30,7 +30,7 @@ if [ ! -d ${CACHE_DIR}/${MAVEN_DIR} ]; then
 fi
 
 # Setup NewRelic
-if [ ! -d ${CACHE_DIR}/${NEWRELIC_DIR} ]; then
+if [ ! -d ${CACHE_DIR}/${NEWRELIC_DIR}/extensions ]; then
     mkdir -p ${CACHE_DIR}/${NEWRELIC_DIR}/extensions
     echo "-----> Cached NewRelic agent not found, downloading"
     echo "-----> Downloading from ${NEWRELIC_URL}..."
