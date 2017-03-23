@@ -4,9 +4,9 @@ BUILD_DIR="$1"
 
 if [ ! -f "$BUILD_DIR/Procfile" ]; then
     cat <<EOF
-agents: vc-start
 default_process_types:
     web: ./apache-maven/bin/mvn -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
     worker: ./apache-maven/bin/mvn -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
+    agents: vc-start
 EOF
 fi
