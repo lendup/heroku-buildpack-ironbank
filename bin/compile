@@ -46,6 +46,9 @@ cp -r ${CACHE_DIR}/${NEWRELIC_DIR} ${BUILD_DIR}
 # Build entire project
 cd "$BUILD_DIR"
 
+# Ensure a dev.conf file exists
+touch ${BUILD_DIR}/conf/dev.conf
+
 # Initialize Play! and precompile it.
 ${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
 
