@@ -1,12 +1,29 @@
 #!/bin/bash
 
+set -euo pipefail
+
 BUILD_DIR="$1"
 CACHE_DIR="$2"
 ENV_DIR="$3"
 
+export_env_dir() {
+  env_dir=$1
+  whitelist_regex=${2:-''}
+  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    pushd "$env_dir"
+    for e in * ; do
+      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
+      export "$e=$(cat "$env_dir/$e")"
+      echo "       export_env_dir: set $e"
+    done
+    popd
+  fi
+}
+
 ##
 ## Constants
-## 
+##
 
 MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 MAVEN_DIR="apache-maven"
@@ -48,6 +65,9 @@ cd "$BUILD_DIR"
 
 # Ensure a dev.conf file exists
 touch ${BUILD_DIR}/conf/dev.conf
+
+export_env_dir "$ENV_DIR"
+echo "-----> Using ARTIFACTORY_USERNAME: $ARTIFACTORY_USERNAME"
 
 # Initialize Play! and precompile it.
 ${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
