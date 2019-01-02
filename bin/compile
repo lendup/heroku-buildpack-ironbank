@@ -70,6 +70,10 @@ export_env_dir "$ENV_DIR"
 echo "-----> Using ARTIFACTORY_USERNAME: $ARTIFACTORY_USERNAME"
 
 # Initialize Play! and precompile it.
+echo "-----> BUILD_DIR = ${BUILD_DIR}"
+echo "-----> CACHED_MAVEN_REPO = ${CACHED_MAVEN_REPO}"
+echo "-----> ${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
+"
 ${BUILD_DIR}/${MAVEN_DIR}/bin/mvn -P '!local' --settings ${BUILD_DIR}/assets/settings.xml -Dmaven.repo.local=${CACHED_MAVEN_REPO} clean compile play:precompile
 
 # remove unnecessary node modules and free up space since slug is limited to <300 MB compressed
