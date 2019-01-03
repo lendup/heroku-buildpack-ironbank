@@ -70,7 +70,7 @@ export_env_dir "$ENV_DIR"
 echo "-----> Using ARTIFACTORY_USERNAME: $ARTIFACTORY_USERNAME"
 
 MAVEN_DEBUG_FLAGS=""
-[[ -n "${ENABLE_MAVEN_DEBUG:-}" ]] && MAVEN_DEBUG_FLAGS="-e -X"
+[[ -n "${ENABLE_MAVEN_DEBUG:-}" ]] && MAVEN_DEBUG_FLAGS="-e -X -Dmaven.compiler.debuglevel=source"
 
 # Initialize Play! and precompile it.
 echo "-----> BUILD_DIR = ${BUILD_DIR}"
