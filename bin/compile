@@ -8,7 +8,7 @@ ENV_DIR="$3"
 
 export_env_dir() {
   env_dir=$1
-  whitelist_regex=${2:-''}
+  whitelist_regex=${2:-'^(ARTIFACTORY_USERNAME|ARTIFACTORY_PASSWORD)$'}
   blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH|JAVA_TOOL_OPTIONS)$'}
   if [ -d "$env_dir" ]; then
     pushd "$env_dir"
