@@ -2,14 +2,10 @@
 
 BUILD_DIR="$1"
 
-
-MAVEN_DEBUG_FLAGS=""
-[[ -n "${ENABLE_MAVEN_DEBUG:-}" ]] && MAVEN_DEBUG_FLAGS="-e -X"
-
 if [ ! -f "$BUILD_DIR/Procfile" ]; then
     cat <<EOF
 default_process_types:
-    web: ./apache-maven/bin/mvn \$MAVEN_DEBUG_FLAGS -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
-    worker: ./apache-maven/bin/mvn \$MAVEN_DEBUG_FLAGS -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
+    web: ./apache-maven/bin/mvn -e -X -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
+    worker: ./apache-maven/bin/mvn -e -X -P '!local' --settings ./assets/settings.xml -Dmaven.repo.local=./.m2_repository play:run -Dplay.httpPort=\$PORT -Dplay.id=\$PLAY_ID -Dplay.serverJvmArgs="-javaagent:./newrelic/newrelic.jar -Dnewrelic.environment=\$PLAY_ID -Dnewrelic.config.file=./conf/newrelic.yml \$JAVA_OPTS"
 EOF
 fi
