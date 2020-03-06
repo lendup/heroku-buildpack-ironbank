@@ -29,12 +29,6 @@ MAVEN_URL="http://www.gtlib.gatech.edu/pub/apache/maven/maven-3/3.3.9/binaries/a
 MAVEN_DIR="apache-maven"
 CACHED_MAVEN_REPO=${CACHE_DIR}/.m2_repository
 
-# NewRelic Constants
-NEWRELIC_VERSION="3.31.1"
-NEWRELIC_DIR="newrelic"
-NEWRELIC_URL="https://download.newrelic.com/newrelic/java-agent/newrelic-agent/${NEWRELIC_VERSION}/newrelic-java-${NEWRELIC_VERSION}.zip"
-C3P0_NEWRELIC_URL="https://oss.sonatype.org/content/repositories/snapshots/com/newrelic/agent/java/incubator/c3p0-0.9/SNAPSHOT/c3p0-0.9-20160919.190751-78.jar"
-
 ##
 ## Code
 ##
@@ -46,19 +40,7 @@ if [ ! -d ${CACHE_DIR}/${MAVEN_DIR} ]; then
     wget -qO- ${MAVEN_URL} | tar xz -C ${CACHE_DIR}/${MAVEN_DIR} --strip-components 1
 fi
 
-# Setup NewRelic
-if [ ! -d ${CACHE_DIR}/${NEWRELIC_DIR}/extensions ]; then
-    mkdir -p ${CACHE_DIR}/${NEWRELIC_DIR}/extensions
-    echo "-----> Cached NewRelic agent not found, downloading"
-    echo "-----> Downloading from ${NEWRELIC_URL}..."
-    wget -q ${NEWRELIC_URL} -O ${CACHE_DIR}/newrelic_tmp.zip
-    wget -q ${C3P0_NEWRELIC_URL} -O ${CACHE_DIR}/${NEWRELIC_DIR}/extensions/c3p0-0.9-20160919.190751-78.jar
-    unzip ${CACHE_DIR}/newrelic_tmp.zip -d ${CACHE_DIR}
-    rm ${CACHE_DIR}/newrelic_tmp.zip
-fi
-
 cp -r ${CACHE_DIR}/${MAVEN_DIR} ${BUILD_DIR}
-cp -r ${CACHE_DIR}/${NEWRELIC_DIR} ${BUILD_DIR}
 
 # Build entire project
 cd "$BUILD_DIR"
